@@ -4,9 +4,9 @@
 
 ---
 
-## Current: v0.1.0 — Read-Only Foundation
+## Previous: v0.1.0 — Read-Only Foundation
 
-**Status:** Released
+**Status:** Released (2026-03-11)
 
 Six read-only tools covering the core Circle.so data model:
 
@@ -23,7 +23,32 @@ Infrastructure:
 
 ---
 
-## v0.2 — Write Tools
+## Current: v0.2.0 — Community Intelligence
+
+**Status:** Released (2026-03-11)
+
+Seven new read-only tools expanding coverage to comments, topics, community metadata, space groups, and derived analytics. Total: 13 tools.
+
+Extended Read tools:
+- `circle_list_comments` — List comments on a post with pagination
+- `circle_get_comment` — Retrieve a single comment by ID
+- `circle_list_topics` — List topics/tags in the community
+- `circle_get_community` — Community-level metadata (name, slug, settings)
+- `circle_list_space_groups` — Space groups with contained space IDs
+
+Derived Intelligence tools:
+- `circle_detect_unanswered_posts` — Scan for posts with zero comments (multi-call aggregation)
+- `circle_community_health` — Point-in-time health snapshot (spaces, posts, members)
+
+Improvements:
+- 57 offline tests (21 new), 19 live tests (7 new)
+- Derived tools include transparent `computation` metadata
+- Zod `.strict()` schemas on all 13 tools
+- MCP runtime handshake confirms v0.2.0 and 13-tool listing
+
+---
+
+## v0.3 — Write Tools
 
 **Scope:** Create, update, and delete operations for posts and members.
 
@@ -40,7 +65,7 @@ Design considerations:
 
 ---
 
-## v0.3 — Events and Courses
+## v0.4 — Events and Courses
 
 **Scope:** Extend tool coverage to Circle's event and course features.
 
@@ -52,7 +77,7 @@ Planned tools:
 
 ---
 
-## v0.4 — Webhook Subscriptions
+## v0.5 — Webhook Subscriptions
 
 **Scope:** Real-time event streaming via MCP resources.
 

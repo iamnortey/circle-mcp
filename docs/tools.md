@@ -1,6 +1,6 @@
 # Tool Reference — Circle MCP Server
 
-> Complete reference for the six read-only tools provided by Circle MCP Server v0.1.0.
+> Complete reference for the thirteen read-only tools provided by Circle MCP Server v0.2.0.
 
 ---
 
@@ -27,7 +27,9 @@ These parameters are available on all list endpoints:
 
 ---
 
-## circle_list_spaces
+## Core Read Tools (v0.1.0)
+
+### circle_list_spaces
 
 List spaces in the community with pagination and sorting.
 
@@ -43,7 +45,7 @@ List spaces in the community with pagination and sorting.
 
 ---
 
-## circle_get_space
+### circle_get_space
 
 Retrieve a single space by its numeric ID.
 
@@ -55,7 +57,7 @@ Retrieve a single space by its numeric ID.
 
 ---
 
-## circle_list_posts
+### circle_list_posts
 
 List posts with filtering by space, status, and text search.
 
@@ -77,7 +79,7 @@ List posts with filtering by space, status, and text search.
 
 ---
 
-## circle_get_post
+### circle_get_post
 
 Retrieve a single post by its numeric ID, including the full TipTap rich-text body.
 
@@ -89,7 +91,7 @@ Retrieve a single post by its numeric ID, including the full TipTap rich-text bo
 
 ---
 
-## circle_list_members
+### circle_list_members
 
 List community members with status filtering.
 
@@ -103,7 +105,7 @@ List community members with status filtering.
 
 ---
 
-## circle_search
+### circle_search
 
 Search across the community. Returns lightweight summary objects — use `circle_get_space` or `circle_get_post` for full details on specific results.
 
@@ -117,6 +119,107 @@ Search across the community. Returns lightweight summary objects — use `circle
 **Type options:** `general`, `members`, `posts`, `comments`, `spaces`, `lessons`, `events`, `entity_list`, `mentions`
 
 **Returns:** Pagination envelope + array of lightweight result objects with id, name, slug, and type. These are summary objects, not full resources.
+
+---
+
+## Extended Read Tools (v0.2.0)
+
+### circle_list_comments
+
+List comments on a post with pagination.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `post_id` | integer | No | Filter to a specific post |
+| `space_id` | integer | No | Filter to a specific space |
+| `page` | integer | No | Page number |
+| `per_page` | integer | No | Results per page |
+
+**Returns:** Pagination envelope + array of comment objects with id, body, author, and timestamps.
+
+---
+
+### circle_get_comment
+
+Retrieve a single comment by its numeric ID.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `comment_id` | integer | **Yes** | Numeric comment ID |
+
+**Returns:** Full comment object with all fields.
+
+---
+
+### circle_list_topics
+
+List topics (tags) available in the community.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `page` | integer | No | Page number |
+| `per_page` | integer | No | Results per page |
+
+**Returns:** Pagination envelope + array of topic objects with id, name, slug, and post count.
+
+---
+
+### circle_get_community
+
+Retrieve community-level metadata including name, slug, and settings.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| _(none)_ | — | — | No parameters required |
+
+**Returns:** Community object with id, name, slug, URL, and configuration settings.
+
+---
+
+### circle_list_space_groups
+
+List space groups in the community, including the space IDs contained in each group.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `page` | integer | No | Page number |
+| `per_page` | integer | No | Results per page |
+
+**Returns:** Pagination envelope + array of space group objects with id, name, and contained space IDs.
+
+---
+
+## Derived Intelligence Tools (v0.2.0)
+
+These tools aggregate multiple API calls to produce analytical summaries. Each response includes a `computation` metadata block showing exactly which API calls were made and how results were derived.
+
+### circle_detect_unanswered_posts
+
+Scan for posts that have zero comments, surfacing unanswered questions in the community.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `space_id` | integer | No | Limit scan to a specific space |
+| `per_page` | integer | No | Max posts to scan per page |
+| `page` | integer | No | Page to scan |
+
+**Returns:** Object with `unanswered_posts` array, `total_scanned`, `total_unanswered`, and `computation` metadata.
+
+> **Heuristic:** Uses `comments_count === 0` as the unanswered signal. This may not account for deleted comments.
+
+---
+
+### circle_community_health
+
+Generate a point-in-time community health snapshot by aggregating community, space, post, and member data.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| _(none)_ | — | — | No parameters required |
+
+**Returns:** Object with `community` name, `total_spaces`, `total_posts`, `total_members`, `top_spaces_by_posts`, and `computation` metadata.
+
+> **Note:** This is a point-in-time snapshot, not a trend. It shows current counts without historical comparison.
 
 ---
 
@@ -136,6 +239,23 @@ Search across the community. Returns lightweight summary objects — use `circle
       "page_count": 5
     },
     "records": [ ... ]
+  }
+}
+```
+
+### Derived Tool Success
+
+```json
+{
+  "content": [{ "type": "text", "text": "{ ... }" }],
+  "structuredContent": {
+    "unanswered_posts": [ ... ],
+    "total_scanned": 25,
+    "total_unanswered": 3,
+    "computation": {
+      "calls_made": ["listPosts(space_id=123, per_page=25, page=1)"],
+      "heuristic": "comments_count === 0"
+    }
   }
 }
 ```

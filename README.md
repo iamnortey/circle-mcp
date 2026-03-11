@@ -6,13 +6,15 @@
 
 ## What It Does
 
-Circle MCP Server bridges your Circle.so community with Claude Desktop (or any [Model Context Protocol](https://modelcontextprotocol.io) client). It exposes six read-only tools that let an LLM query your community's spaces, posts, members, and search results through natural language — no API scripting required.
+Circle MCP Server bridges your Circle.so community with Claude Desktop (or any [Model Context Protocol](https://modelcontextprotocol.io) client). It exposes **thirteen read-only tools** that let an LLM query your community's spaces, posts, members, comments, topics, and search results through natural language — plus derived analytics that aggregate multiple API calls into actionable summaries.
 
 Ask Claude questions like:
 - *"What are the most active spaces in my community?"*
 - *"Show me recent posts in the Announcements space"*
 - *"Find members who joined this month"*
 - *"Search for discussions about onboarding"*
+- *"Are there any unanswered posts in my community?"*
+- *"Give me a health snapshot of my community"*
 
 The server translates these into structured Circle Admin API calls, handles pagination, retries transient failures, and returns clean results.
 
@@ -35,7 +37,7 @@ The server follows a clean, layered architecture designed for reliability and ma
 ┌──────────────▼──────────────────────────────┐
 │           MCP Server Layer                   │
 │  ┌────────────────────────────────────────┐  │
-│  │     6 Registered Tool Handlers         │  │
+│  │    13 Registered Tool Handlers        │  │
 │  │  (validation, response formatting)     │  │
 │  └──────────────┬─────────────────────────┘  │
 │  ┌──────────────▼─────────────────────────┐  │
@@ -65,7 +67,9 @@ See [ARCHITECTURE.md](./ARCHITECTURE.md) for the full design breakdown.
 
 ## Tools
 
-Six read-only tools covering the core Circle.so data model:
+Thirteen read-only tools organized in three tiers:
+
+### Core Read Tools (v0.1.0)
 
 | Tool | Purpose | Key Parameters |
 |------|---------|----------------|
@@ -76,11 +80,30 @@ Six read-only tools covering the core Circle.so data model:
 | `circle_list_members` | List community members | pagination, status filter |
 | `circle_search` | Search across the community | `query` (required), type filter |
 
+### Extended Read Tools (v0.2.0)
+
+| Tool | Purpose | Key Parameters |
+|------|---------|----------------|
+| `circle_list_comments` | List comments on a post | `post_id`, `space_id`, pagination |
+| `circle_get_comment` | Get a single comment by ID | `comment_id` (required) |
+| `circle_list_topics` | List topics/tags in the community | pagination |
+| `circle_get_community` | Get community metadata | _(no params)_ |
+| `circle_list_space_groups` | List space groups with space IDs | pagination |
+
+### Derived Intelligence Tools (v0.2.0)
+
+| Tool | Purpose | Key Parameters |
+|------|---------|----------------|
+| `circle_detect_unanswered_posts` | Find posts with zero comments | `space_id` (optional filter) |
+| `circle_community_health` | Point-in-time community health snapshot | _(no params)_ |
+
 All tools share consistent behavior:
 - **Pagination** via `page` and `per_page` parameters
 - **Read-only** with MCP annotations (`readOnlyHint: true`, `destructiveHint: false`)
 - **Strict input validation** — unknown parameters are rejected
 - **Consistent error messages** with actionable guidance
+
+Derived tools aggregate multiple API calls and include transparent `computation` metadata showing exactly which calls were made.
 
 See [docs/tools.md](./docs/tools.md) for the complete tool reference.
 
@@ -106,31 +129,37 @@ The server is built for real-world reliability:
 | Transport | stdio (JSON-RPC over stdin/stdout) |
 | Validation | Zod with `.strict()` schemas |
 | External API | Circle Admin API v2 |
-| Testing | 36 offline tests + 12 live API tests |
+| Testing | 57 offline tests + 19 live API tests |
 | CI | GitHub Actions (Node 18/20/22 matrix) |
 
 ## Release Status
 
-**Current version: v0.1.0** — Initial release
+**Current version: v0.2.0** — Community Intelligence
 
-This is a stable, validated release supporting read-only operations. The server has been tested against live Circle communities and passes a comprehensive offline test suite.
+This is a stable, validated release supporting 13 read-only tools across three tiers. The server has been tested against live Circle communities with 57 offline tests and 19 live API tests.
 
 ### Roadmap
 
 | Version | Scope |
 |---------|-------|
-| v0.1.0 | Read-only tools (spaces, posts, members, search) — **current** |
-| v0.2 | Write tools (create/update/delete posts, members) |
-| v0.3 | Event and course tools |
-| v0.4 | Webhook subscriptions via MCP resources |
+| v0.1.0 | Read-only tools (spaces, posts, members, search) |
+| v0.2.0 | Community intelligence (comments, topics, community, space groups, derived analytics) — **current** |
+| v0.3 | Write tools (create/update/delete posts, members) |
+| v0.4 | Event and course tools |
+| v0.5 | Webhook subscriptions via MCP resources |
 
-## Known Limitations
+## Known Limitations (v0.2)
 
-1. **Read-only** — no create, update, or delete operations (planned for v0.2)
+1. **Read-only** — no create, update, or delete operations (planned for v0.3)
 2. **No rate-limit tracking** — retry/backoff handles individual 429s but doesn't track cumulative usage
 3. **Search returns summaries** — use `circle_get_space` or `circle_get_post` for full detail
 4. **Page-based pagination** — no cursor pagination support
 5. **TipTap body always included** — post listings include full rich-text bodies
+6. **No streaming support** — full response payloads only
+7. **Single community** — one API token = one community
+8. **100 per_page ceiling** — assumed safe maximum (not documented by Circle)
+9. **Unanswered heuristic** — `circle_detect_unanswered_posts` uses `comments_count === 0` which may not account for deleted comments
+10. **Health snapshot is point-in-time** — `circle_community_health` shows current counts, not trends
 
 ## Getting Started
 

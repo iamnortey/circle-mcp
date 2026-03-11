@@ -1,6 +1,6 @@
 # Architecture — Circle MCP Server
 
-> Design decisions, module structure, and data flow for the Circle MCP Server v0.1.0.
+> Design decisions, module structure, and data flow for the Circle MCP Server v0.2.0.
 
 ---
 
@@ -25,7 +25,7 @@ src/
   config/
     env.ts              ← Environment validation with fail-fast semantics
   types/
-    circle.ts           ← Circle domain types (Space, Post, Member, SearchResult)
+    circle.ts           ← Circle domain types (Space, Post, Member, Comment, Topic, Community, SpaceGroup)
     common.ts           ← Shared types: pagination envelope, response truncation
   lib/
     http.ts             ← HTTP client with auth headers, timeout, retry/backoff
@@ -33,17 +33,24 @@ src/
     responses.ts        ← Shared response builder: text + structuredContent
     pagination.ts       ← Pagination summary extraction from API responses
   schemas/
-    inputs.ts           ← Zod input schemas for all 6 tools (strict mode)
+    inputs.ts           ← Zod input schemas for all 13 tools (strict mode)
   clients/
-    circle-client.ts    ← Typed Circle API client (6 typed methods)
+    circle-client.ts    ← Typed Circle API client (11 typed methods)
   tools/
-    index.ts            ← Tool registration orchestrator
+    index.ts            ← Tool registration orchestrator (13 tools)
     list-spaces.ts      ← circle_list_spaces handler
     get-space.ts        ← circle_get_space handler
     list-posts.ts       ← circle_list_posts handler
     get-post.ts         ← circle_get_post handler
     list-members.ts     ← circle_list_members handler
     search.ts           ← circle_search handler
+    list-comments.ts    ← circle_list_comments handler (v0.2.0)
+    get-comment.ts      ← circle_get_comment handler (v0.2.0)
+    list-topics.ts      ← circle_list_topics handler (v0.2.0)
+    get-community.ts    ← circle_get_community handler (v0.2.0)
+    list-space-groups.ts ← circle_list_space_groups handler (v0.2.0)
+    detect-unanswered-posts.ts ← circle_detect_unanswered_posts (v0.2.0, derived)
+    community-health.ts ← circle_community_health (v0.2.0, derived)
 ```
 
 ---
@@ -103,7 +110,22 @@ Every successful tool response includes two representations:
 
 This ensures both text-based and structured-data MCP clients get optimal results.
 
-### 5. Defensive Error Handling
+### 5. Derived Intelligence Pattern (v0.2.0)
+
+Derived tools (`circle_detect_unanswered_posts`, `circle_community_health`) aggregate multiple API calls into higher-level analytics. Each includes a `computation` metadata block:
+
+```json
+{
+  "computation": {
+    "calls_made": ["listPosts(...)", "listSpaces(...)"],
+    "heuristic": "comments_count === 0"
+  }
+}
+```
+
+This ensures transparency — the LLM (and user) can see exactly which API calls were made and what logic produced the result.
+
+### 6. Defensive Error Handling
 
 All errors are normalized through a single pipeline:
 
@@ -140,6 +162,17 @@ The pipeline maps HTTP status codes to actionable messages:
 10. MCP SDK sends JSON-RPC result back to Claude
 ```
 
+### Derived Tool Call (v0.2.0)
+
+```
+1. Handler validates input via Zod schema
+2. Handler makes MULTIPLE CircleClient calls (e.g., getCommunity + listSpaces + listPosts)
+3. Results aggregated into summary object
+4. computation metadata block assembled
+5. buildToolResponse() formats response with computation
+6. MCP SDK sends JSON-RPC result back to Claude
+```
+
 ### Retry Flow
 
 ```
@@ -167,7 +200,7 @@ The pipeline maps HTTP status codes to actionable messages:
 
 ## Tool Annotations
 
-All six tools share consistent MCP annotations:
+All thirteen tools share consistent MCP annotations:
 
 ```json
 {
@@ -190,8 +223,9 @@ These signal to the MCP client that:
 
 | Test Layer | Count | Scope |
 |-----------|-------|-------|
-| **Offline smoke tests** | 36 | Unit tests for all shared utilities, error handling, schema validation |
-| **Live API tests** | 12 | End-to-end tests against live Circle API (happy + error paths) |
+| **Offline smoke tests** | 57 | Unit tests for all shared utilities, error handling, 13 schema validations |
+| **Live API tests (v0.1.0)** | 12 | End-to-end tests for 6 core tools against live Circle API |
+| **Live API tests (v0.2.0)** | 7 | End-to-end tests for 7 new tools against live Circle API |
 
 Offline tests run without API credentials and validate all code paths except the HTTP layer. Live tests require a real Circle API token and validate the full request-response cycle.
 
