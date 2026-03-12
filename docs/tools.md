@@ -1,6 +1,6 @@
 # Tool Reference — Circle MCP Server
 
-> Complete reference for the thirteen read-only tools provided by Circle MCP Server v0.2.0.
+> Complete reference for the sixteen tools provided by Circle MCP Server v0.3.0.
 
 ---
 
@@ -9,10 +9,23 @@
 All tools follow consistent patterns:
 
 - **Naming:** `circle_` prefix with `snake_case`
-- **Annotations:** `readOnlyHint: true`, `destructiveHint: false`, `idempotentHint: true`
 - **Validation:** Zod `.strict()` schemas — unknown parameters are rejected
 - **Responses:** Dual format (human-readable text + machine-parseable `structuredContent`)
 - **Errors:** Actionable messages with specific guidance
+
+### Read Tool Annotations
+
+```json
+{ "readOnlyHint": true, "destructiveHint": false, "idempotentHint": true, "openWorldHint": true }
+```
+
+### Write Tool Annotations
+
+```json
+{ "readOnlyHint": false, "destructiveHint": false, "idempotentHint": false, "openWorldHint": true }
+```
+
+> Note: `circle_update_post` uses `idempotentHint: true` (same update produces same result).
 
 ---
 
@@ -223,9 +236,71 @@ Generate a point-in-time community health snapshot by aggregating community, spa
 
 ---
 
+## Write Tools (v0.3.0)
+
+These tools perform safe, non-destructive mutations. No delete or archive operations are included. Write tools use a separate mutation path with zero-retry policy to prevent duplicate writes.
+
+### circle_create_post
+
+Create a new post in a specified space.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `space_id` | integer | **Yes** | Target space ID |
+| `name` | string | **Yes** | Post title (non-empty) |
+| `body` | string | **Yes** | Post body as HTML (non-empty) |
+| `status` | enum | No | `draft` or `published` (default: draft) |
+| `slug` | string | No | Custom URL slug |
+| `is_comments_enabled` | boolean | No | Enable/disable comments |
+| `skip_notifications` | boolean | No | Skip notification emails |
+| `user_email` | string | No | Author email (post on behalf of) |
+
+**Returns:** `MutationResult` envelope with the created post object.
+
+> **Note:** The `body` field in the response will be empty. Use `circle_get_post` after creation for the full populated body.
+
+---
+
+### circle_update_post
+
+Update an existing post by ID. Only provided fields are changed.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `post_id` | integer | **Yes** | Post ID to update |
+| `name` | string | No | New post title |
+| `body` | string | No | New post body as HTML |
+| `status` | enum | No | `draft` or `published` |
+| `slug` | string | No | New URL slug |
+| `is_comments_enabled` | boolean | No | Enable/disable comments |
+| `skip_notifications` | boolean | No | Skip notification emails |
+| `user_email` | string | No | Author email |
+
+**Returns:** `MutationResult` envelope with the updated post object.
+
+> **Important:** Published posts cannot be reverted to draft status. Attempting to set `status: "draft"` on a published post will return a 400 error from the Circle API.
+
+---
+
+### circle_create_comment
+
+Create a comment on a post.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `post_id` | integer | **Yes** | Target post ID |
+| `body` | string | **Yes** | Comment body as HTML (non-empty) |
+| `user_email` | string | No | Author email (comment on behalf of) |
+
+**Returns:** `MutationResult` envelope with the created comment object.
+
+> **Known limitation:** This endpoint returns 401 with admin API tokens due to a Circle API permission restriction. The server handles this gracefully with a structured error message that explains the limitation and suggests using the Circle web interface as a workaround. Read operations (`circle_list_comments`, `circle_get_comment`) work normally.
+
+---
+
 ## Response Format
 
-### Success
+### Read Success
 
 ```json
 {
@@ -239,6 +314,19 @@ Generate a point-in-time community health snapshot by aggregating community, spa
       "page_count": 5
     },
     "records": [ ... ]
+  }
+}
+```
+
+### Mutation Success (v0.3.0)
+
+```json
+{
+  "content": [{ "type": "text", "text": "{ ... }" }],
+  "structuredContent": {
+    "operation": "create",
+    "endpoint": "POST /api/admin/v2/posts",
+    "data": { ... }
   }
 }
 ```
@@ -275,9 +363,11 @@ Generate a point-in-time community health snapshot by aggregating community, spa
 
 | Status | Meaning | Guidance |
 |--------|---------|----------|
+| 400 | Bad request | Check parameters — may indicate invalid status transition (e.g., published → draft) |
 | 401 | Authentication failed | Verify API token is correct and not expired |
 | 403 | Permission denied | Ensure token has Admin-level access |
 | 404 | Resource not found | Verify the space/post/member ID exists |
+| 409 | Conflict | Resource state conflict — the target may have been modified concurrently |
 | 422 | Validation failed | Check parameters against the schema above |
 | 429 | Rate limited | Circle allows 2,000 req / 5 min / IP — wait and retry |
 | Timeout | Request timed out | Circle API may be slow — retries handle transient failures |

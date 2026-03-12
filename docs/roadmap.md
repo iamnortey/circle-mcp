@@ -23,7 +23,7 @@ Infrastructure:
 
 ---
 
-## Current: v0.2.0 — Community Intelligence
+## Previous: v0.2.0 — Community Intelligence
 
 **Status:** Released (2026-03-11)
 
@@ -48,32 +48,44 @@ Improvements:
 
 ---
 
-## v0.3 — Write Tools
+## Current: v0.3.0 — Safe Content Operations
 
-**Scope:** Create, update, and delete operations for posts and members.
+**Status:** Released (2026-03-11)
 
-Planned tools:
-- `circle_create_post` — Create a new post in a space
-- `circle_update_post` — Edit an existing post
-- `circle_delete_post` — Remove a post
-- `circle_update_member` — Modify member attributes
+Three write tools enabling safe, non-destructive content mutations. Total: 16 tools (13 read + 3 write).
 
-Design considerations:
-- MCP annotations will shift to `readOnlyHint: false`, `destructiveHint: true` for mutations
-- Confirmation patterns for destructive operations
-- Input validation for rich-text (TipTap) content
+Write tools:
+- `circle_create_post` — Create a new post in a space (name, body, space_id required; optional status, slug, comments toggle, notifications, author)
+- `circle_update_post` — Update an existing post by ID (post_id required; all other fields optional). Published posts cannot revert to draft
+- `circle_create_comment` — Create a comment on a post (post_id, body required; optional author). Known 401 limitation with admin API tokens
+
+Mutation infrastructure:
+- `mutate<T>()` method with zero-retry policy (prevents duplicate writes)
+- `buildMutationResponse()` envelope for consistent write tool output
+- Permission-aware error handling for comment creation (401/403 → actionable workaround)
+- Flat endpoint and payload patterns (live-proven against Circle API)
+
+Write tool annotations:
+- `readOnlyHint: false`, `destructiveHint: false` on all write tools
+- `idempotentHint: true` on update, `idempotentHint: false` on create operations
+
+Improvements:
+- 95 offline tests (38 new), 19 live tests
+- HTTP request type schemas with Zod validation
+- Non-destructive by design — no delete or archive operations
 
 ---
 
-## v0.4 — Events and Courses
+## v0.4 — Events, Courses, and Expanded Write Tools
 
-**Scope:** Extend tool coverage to Circle's event and course features.
+**Scope:** Extend tool coverage to Circle's event and course features, plus additional write operations.
 
 Planned tools:
 - `circle_list_events` — List community events
 - `circle_get_event` — Get event details
 - `circle_list_courses` — List available courses
 - `circle_get_course` — Get course details with curriculum
+- Additional write tools for member management and content moderation
 
 ---
 
@@ -95,3 +107,5 @@ Planned capabilities:
 - **Streaming responses** — Progressive delivery for large payloads
 - **Multi-community support** — Manage multiple Circle communities from a single server
 - **npm publication** — Global install via `npx` for simplified distribution
+- **File/image upload** — Rich media support for post creation
+- **Delete/archive operations** — With confirmation patterns for destructive actions

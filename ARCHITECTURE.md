@@ -1,6 +1,6 @@
 # Architecture — Circle MCP Server
 
-> Design decisions, module structure, and data flow for the Circle MCP Server v0.2.0.
+> Design decisions, module structure, and data flow for the Circle MCP Server v0.3.0.
 
 ---
 
@@ -26,18 +26,18 @@ src/
     env.ts              ← Environment validation with fail-fast semantics
   types/
     circle.ts           ← Circle domain types (Space, Post, Member, Comment, Topic, Community, SpaceGroup)
-    common.ts           ← Shared types: pagination envelope, response truncation
+    common.ts           ← Shared types: pagination envelope, response truncation, mutation result
   lib/
-    http.ts             ← HTTP client with auth headers, timeout, retry/backoff
+    http.ts             ← HTTP client with auth headers, timeout, retry/backoff, mutation path
     errors.ts           ← Error normalization → CircleApiError with actionable messages
-    responses.ts        ← Shared response builder: text + structuredContent
+    responses.ts        ← Shared response builder: text + structuredContent + mutation responses
     pagination.ts       ← Pagination summary extraction from API responses
   schemas/
-    inputs.ts           ← Zod input schemas for all 13 tools (strict mode)
+    inputs.ts           ← Zod input schemas for all 16 tools (strict mode)
   clients/
-    circle-client.ts    ← Typed Circle API client (11 typed methods)
+    circle-client.ts    ← Typed Circle API client (14 typed methods: 11 read + 3 write)
   tools/
-    index.ts            ← Tool registration orchestrator (13 tools)
+    index.ts            ← Tool registration orchestrator (16 tools)
     list-spaces.ts      ← circle_list_spaces handler
     get-space.ts        ← circle_get_space handler
     list-posts.ts       ← circle_list_posts handler
@@ -51,6 +51,9 @@ src/
     list-space-groups.ts ← circle_list_space_groups handler (v0.2.0)
     detect-unanswered-posts.ts ← circle_detect_unanswered_posts (v0.2.0, derived)
     community-health.ts ← circle_community_health (v0.2.0, derived)
+    create-post.ts      ← circle_create_post handler (v0.3.0, write)
+    update-post.ts      ← circle_update_post handler (v0.3.0, write)
+    create-comment.ts   ← circle_create_comment handler (v0.3.0, write)
 ```
 
 ---
@@ -67,7 +70,7 @@ Each layer has a single responsibility:
 | **Server** | Tool registration, lifecycle | `server.ts`, `tools/index.ts` |
 | **Tools** | Input validation, response formatting | `tools/*.ts`, `schemas/inputs.ts` |
 | **Client** | API method typing, endpoint mapping | `clients/circle-client.ts` |
-| **HTTP** | Auth, timeout, retry, error normalization | `lib/http.ts`, `lib/errors.ts` |
+| **HTTP** | Auth, timeout, retry, error normalization, mutation path | `lib/http.ts`, `lib/errors.ts` |
 
 No layer reaches across boundaries. Tools never construct HTTP requests directly. The HTTP layer never formats MCP responses.
 
@@ -125,7 +128,27 @@ Derived tools (`circle_detect_unanswered_posts`, `circle_community_health`) aggr
 
 This ensures transparency — the LLM (and user) can see exactly which API calls were made and what logic produced the result.
 
-### 6. Defensive Error Handling
+### 6. Safe Mutation Pattern (v0.3.0)
+
+Write tools use a separate mutation path with distinct safety properties:
+
+- **Zero-retry policy:** `mutate<T>()` never retries failed writes to prevent duplicate creation
+- **Flat endpoint pattern:** `POST /api/admin/v2/posts` (not nested under spaces)
+- **Flat payload pattern:** Fields sent directly in request body (no resource key wrapper)
+- **Permission-aware errors:** Comment creation 401 returns structured workaround guidance instead of raw error
+- **MCP annotations:** `readOnlyHint: false`, `destructiveHint: false` — non-destructive by design
+
+The mutation response is wrapped in a `MutationResult<T>` envelope:
+
+```json
+{
+  "operation": "create",
+  "endpoint": "POST /api/admin/v2/posts",
+  "data": { ... }
+}
+```
+
+### 7. Defensive Error Handling
 
 All errors are normalized through a single pipeline:
 
@@ -173,7 +196,22 @@ The pipeline maps HTTP status codes to actionable messages:
 6. MCP SDK sends JSON-RPC result back to Claude
 ```
 
-### Retry Flow
+### Mutation Data Flow (v0.3.0)
+
+```
+1. Claude Desktop sends JSON-RPC `tools/call` with write tool name + params
+2. MCP SDK routes to registered tool handler
+3. Handler validates input via Zod schema
+4. Handler calls CircleClient mutation method (createPost, updatePost, createComment)
+5. CircleClient constructs URL + request body
+6. CircleHttpClient sends authenticated POST/PUT with timeout (zero retry)
+7. Response parsed → typed object returned
+8. Handler wraps in MutationResult envelope
+9. buildMutationResponse() formats dual response
+10. MCP SDK sends JSON-RPC result back to Claude
+```
+
+### Retry Flow (Read Path Only)
 
 ```
 1. GET request returns 429/5xx or network error
@@ -184,6 +222,8 @@ The pipeline maps HTTP status codes to actionable messages:
 6. Retry the request
 7. Max 2 retries (3 total attempts)
 ```
+
+> **Note:** Write operations use `mutate<T>()` which has zero retries. Only read operations benefit from retry/backoff.
 
 ### Truncation Flow
 
@@ -200,7 +240,7 @@ The pipeline maps HTTP status codes to actionable messages:
 
 ## Tool Annotations
 
-All thirteen tools share consistent MCP annotations:
+### Read Tools (13 tools)
 
 ```json
 {
@@ -217,17 +257,36 @@ These signal to the MCP client that:
 - Repeated calls produce the same result
 - Results may change with external state (new posts, members)
 
+### Write Tools (3 tools, v0.3.0)
+
+```json
+{
+  "readOnlyHint": false,
+  "destructiveHint": false,
+  "idempotentHint": false,
+  "openWorldHint": true
+}
+```
+
+Write tool signals:
+- Tools perform mutations (client may request confirmation)
+- Non-destructive — no delete or archive operations
+- Create operations are not idempotent (each call produces a new resource)
+- `circle_update_post` uses `idempotentHint: true` (same update = same result)
+
 ---
 
 ## Testing Strategy
 
 | Test Layer | Count | Scope |
 |-----------|-------|-------|
-| **Offline smoke tests** | 57 | Unit tests for all shared utilities, error handling, 13 schema validations |
+| **Offline smoke tests** | 95 | Unit tests for all shared utilities, error handling, 16 schema validations, mutation infrastructure |
 | **Live API tests (v0.1.0)** | 12 | End-to-end tests for 6 core tools against live Circle API |
-| **Live API tests (v0.2.0)** | 7 | End-to-end tests for 7 new tools against live Circle API |
+| **Live API tests (v0.2.0)** | 7 | End-to-end tests for 7 extended/derived tools against live Circle API |
 
 Offline tests run without API credentials and validate all code paths except the HTTP layer. Live tests require a real Circle API token and validate the full request-response cycle.
+
+v0.3.0 added 38 new offline tests covering mutation infrastructure, write tool schemas, handlers, and error formatting.
 
 ---
 
