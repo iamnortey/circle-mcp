@@ -1,12 +1,14 @@
-# Circle MCP Server
+# Circle.so MCP Server
 
-> MCP server for the [Circle.so](https://circle.so) Admin API v2 — community intelligence and content management tools for Claude Desktop and compatible MCP clients.
+> Community intelligence and safe content operations for [Circle.so](https://circle.so) — powered by the [Model Context Protocol](https://modelcontextprotocol.io).
+
+**16 tools** | **13 read + 3 write** | **Claude Desktop ready** | **v0.3.0**
 
 ---
 
 ## What It Does
 
-Circle MCP Server bridges your Circle.so community with Claude Desktop (or any [Model Context Protocol](https://modelcontextprotocol.io) client). It exposes **sixteen tools** (thirteen read-only + three write) that let an LLM query and manage your community's spaces, posts, members, comments, topics, and search results through natural language — plus derived analytics that aggregate multiple API calls into actionable summaries.
+This MCP server connects your Circle.so community to Claude Desktop (or any MCP-compatible client). It exposes **sixteen tools** — thirteen read-only and three write — that let you query and manage spaces, posts, members, comments, topics, and search results through natural language. Derived analytics tools aggregate multiple API calls into actionable community summaries.
 
 Ask Claude questions like:
 - *"What are the most active spaces in my community?"*
@@ -185,13 +187,52 @@ This is a stable, validated release supporting 16 tools (13 read + 3 write). The
 
 ## Getting Started
 
-The Circle MCP Server requires:
+### Prerequisites
 
 - **Node.js** ≥ 18.0.0
-- **Circle Admin API token** (from Circle Admin → Settings → API)
-- **An MCP client** (Claude Desktop, MCP Inspector, or compatible client)
+- **Circle Admin API token** — obtain from Circle Admin → Settings → API
+- **Claude Desktop** (or any MCP-compatible client)
 
-The server runs over stdio and is configured in your MCP client's server configuration file. Refer to the source repository's operator documentation for detailed setup instructions.
+### Installation
+
+```bash
+git clone https://github.com/iamnortey/circle-mcp.git
+cd circle-mcp/app/circle-mcp-server
+npm install
+npm run build
+```
+
+### Claude Desktop Configuration
+
+Add to your Claude Desktop config (`~/Library/Application Support/Claude/claude_desktop_config.json` on macOS):
+
+```json
+{
+  "mcpServers": {
+    "circle": {
+      "command": "node",
+      "args": ["/path/to/circle-mcp/app/circle-mcp-server/dist/index.js"],
+      "env": {
+        "CIRCLE_API_TOKEN": "your-circle-admin-api-token"
+      }
+    }
+  }
+}
+```
+
+Restart Claude Desktop. The Circle.so tools will appear automatically.
+
+## Distribution
+
+This project is distributed via **GitHub** as the primary channel. Clone the repository and run the server locally with Claude Desktop.
+
+**npm distribution** is planned for a future release once the API surface stabilizes further.
+
+## Who It's For
+
+- **Community operators** managing Circle.so communities who want faster access to community data through Claude
+- **Community managers** who need quick answers about member activity, post engagement, and unanswered questions
+- **Developers** building MCP-powered workflows on top of Circle.so
 
 ## License
 
