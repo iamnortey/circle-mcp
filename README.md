@@ -1,291 +1,277 @@
-# Circle.so MCP Server
+# Circle MCP
 
-> Connect Claude Desktop to your Circle.so community — read, search, analyze, and create content through natural language.
+**Community intelligence and operations copilot for Circle.so, powered by Claude.**
 
-![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue)
-![Tools](https://img.shields.io/badge/tools-16-green)
-![Tests](https://img.shields.io/badge/tests-110%20passing-brightgreen)
-![License](https://img.shields.io/badge/license-MIT-blue)
-![Node](https://img.shields.io/badge/node-%E2%89%A518-green)
+Inspect, diagnose, and operate your Circle community through natural language. Run community audits, detect unanswered questions, assess onboarding health, identify content gaps, and publish content — all from Claude Code or Claude Desktop.
 
-**16 tools** · **13 read + 3 write** · **Claude Desktop ready** · **Smithery-ready** · **v0.3.0**
+**16 tools** | **13 read + 3 write** | **Non-destructive** | **v0.3.0** | **MIT License**
 
 ---
 
-## What It Does
+## Why It Matters
 
-Circle.so MCP Server gives Claude Desktop direct access to your Circle community via the Circle Admin API v2. Instead of clicking through the Circle admin UI to find answers, you ask Claude — and it queries your community data, surfaces insights, and creates content on your behalf.
+Circle operators spend hours clicking through admin menus to answer basic questions: *Which spaces are empty? Are members getting answers? What does our community structure actually look like?*
 
-Ask things like:
-- *"What spaces do I have and which ones are most active?"*
-- *"Are there any unanswered posts in my community?"*
-- *"Give me a health snapshot — how many members, posts, spaces?"*
-- *"Create an announcement post in the Welcome space"*
-- *"Update the title of post #12345"*
-- *"Search for discussions about onboarding"*
-- *"Show me who joined this month"*
+Circle MCP replaces that with natural language. Ask Claude, get answers. No scripting, no dashboard switching, no manual exports.
 
-The server translates natural language into structured Circle Admin API calls, handles pagination and retries, and returns clean results — so you stay in Claude instead of context-switching to the Circle dashboard.
+This is not just an API wrapper. The server includes derived intelligence tools — community health snapshots, unanswered post detection, content gap analysis — that aggregate multiple API calls into actionable operator insights.
 
 ---
 
 ## Who It's For
 
-### Community operators
-You run a Circle.so community and spend too much time in the admin UI answering basic questions: *Which posts have no replies? How many members joined this week? What does my space structure look like?* This tool gives you those answers in Claude Desktop, instantly.
+- **Community managers** running daily health checks and content operations
+- **Consultants and agencies** auditing client communities and delivering insights
+- **Educators** managing course spaces, responding to student questions, and publishing lesson content
+- **Developer advocates** monitoring community engagement and building MCP-based workflows
+- **AI-native founders** keeping their community alive without a dedicated community team
 
-### Agencies and Circle experts
-You manage client communities and need to audit, assess, or improve them quickly. Instead of manually crawling a client's Circle instance, you connect via MCP and get a structured view of their spaces, content gaps, and community health — in minutes, not hours.
-
-### Educators and cohort builders
-You use Circle.so for courses, learning communities, or academy-style products. You need to draft lesson posts, update announcements, check which discussions need responses, and keep your learning spaces active. This tool lets you do that from Claude without switching between tabs.
-
-### Founders and solo operators
-You are building a community-powered product and don't have a dedicated community manager. You need leverage. This tool helps you see what needs attention, publish updates faster, and avoid letting your community go quiet — all from one conversation in Claude.
+**Requirements:** Git, Node.js >= 18, terminal comfort, and a Circle Admin API token.
 
 ---
 
-## What It Can Do Today
+## Flagship Workflows
 
-### Understand your community faster
-See your spaces, posts, members, comments, and topics without manually browsing the Circle UI. Get a point-in-time health snapshot that aggregates member counts, post counts, and space activity into a single view.
+These workflows have been validated against live Circle communities:
 
-### Find gaps and neglected content
-Detect unanswered posts — questions that have zero comments. Identify spaces that may need attention. Surface content that is published but getting no engagement.
+### Community Architecture Audit
 
-### Create and update content from Claude
-Draft posts in Claude and publish them directly to any space. Update titles, bodies, and settings on existing posts. Use Claude to help you write onboarding copy, lesson outlines, or community announcements — then push them to Circle without leaving your workflow.
+> "List my Circle spaces grouped by space groups. Identify any structural or onboarding issues."
 
-### Operate more efficiently
-Stop clicking through admin menus to answer simple questions. Use Claude as a command layer over your Circle community. Combine community intelligence with content operations in one conversational interface.
+Produces a full inventory of spaces, space groups, types, URLs, and icons. Surfaces empty spaces, unclear naming, and structural gaps.
+
+### Onboarding Audit
+
+> "Inspect my onboarding-related spaces and recommend improvements."
+
+Reviews Getting Started spaces, welcome flows, and introductory content. Identifies where new members might get stuck or lose context.
+
+### Community Health Snapshot
+
+> "Generate a community health snapshot and highlight engagement risks."
+
+Aggregates member counts, post volume, space activity, and unanswered questions into a single operator briefing.
+
+### Unanswered Post Detection
+
+> "Detect unanswered posts and prioritize what needs operator attention."
+
+Scans all spaces (or a specific space) for posts with zero comments. Surfaces neglected questions and engagement gaps.
+
+### Content Gap Analysis
+
+> "Identify empty or underutilized spaces that weaken the member experience."
+
+Cross-references space structure against post activity and engagement. Finds content deserts and recommends where to invest effort.
+
+### Seed Content Planning
+
+> "Based on the community audit, suggest 5 seed posts for the spaces that need content most."
+
+Uses audit insights to recommend specific content for underserved spaces. Pairs with the write tools to draft posts immediately.
+
+### Safe Content Operations
+
+> "Create a draft post in the Announcements space titled 'Q2 Update' with our recent milestones."
+
+Create posts, update existing content, and add comments — all through Claude. Posts default to draft status for review before publishing.
 
 ---
 
-## Use Cases
+## Quick Start
 
-### For agencies auditing a client community
-> *"Show me all spaces in this community"* → See the full structure.
-> *"Which posts have no comments?"* → Find neglected content.
-> *"Give me a health snapshot"* → Get member/post/space counts in one view.
-> *"Search for posts about onboarding"* → Find what exists before creating new content.
+### 1. Get your Circle API token
 
-### For educators managing a learning community
-> *"List posts in the Week 1 space"* → Review lesson content.
-> *"Create a new post in Announcements"* → Push a cohort update.
-> *"Update the body of post #456"* → Fix a lesson post without opening Circle.
-> *"Are there unanswered questions in the Q&A space?"* → Find students who need help.
+Log in to your Circle community as an admin. Go to **Settings** > **API** > **Generate new token**.
 
-### For founders keeping a community alive
-> *"What happened in my community this week?"* → Quick health check.
-> *"Create a welcome post for new members"* → Draft and publish from Claude.
-> *"Show me recent posts sorted by latest"* → See what is getting attention.
-> *"Find members who joined recently"* → Understand growth.
+### 2. Clone and build
 
-### For operators improving community quality
-> *"Detect unanswered posts across all spaces"* → Find gaps systematically.
-> *"List topics in my community"* → Understand content taxonomy.
-> *"Get community metadata"* → See branding, locale, and settings.
-> *"Search for discussions about pricing"* → Audit how a topic is being discussed.
+```bash
+git clone https://github.com/iamnortey/circle-mcp-server.git
+cd circle-mcp-server
+npm install && npm run build
+```
+
+### 3. Connect to Claude
+
+| Client | Guide |
+|--------|-------|
+| **Claude Code** (recommended) | [Claude Code Install Guide](docs/self-serve/CLAUDE_CODE_INSTALL.md) |
+| **Claude Desktop** | [Claude Desktop Install Guide](docs/self-serve/CLAUDE_DESKTOP_INSTALL.md) |
+
+### 4. Verify the connection
+
+```
+Give me a health snapshot of my Circle community
+```
+
+If you see your community name and stats, you're connected.
 
 ---
 
 ## Tools
 
-Sixteen tools organized in four tiers:
+16 tools across four tiers:
 
-### Core Read Tools (v0.1.0)
+| Tier | Tools | Purpose |
+|------|-------|---------|
+| **Core Read** (v0.1.0) | `list_spaces`, `get_space`, `list_posts`, `get_post`, `list_members`, `search` | Community data access |
+| **Extended Read** (v0.2.0) | `list_comments`, `get_comment`, `list_topics`, `get_community`, `list_space_groups` | Full API surface |
+| **Intelligence** (v0.2.0) | `detect_unanswered_posts`, `community_health` | Aggregated operator insights |
+| **Write** (v0.3.0) | `create_post`, `update_post`, `create_comment` | Content management |
 
-| Tool | Purpose | Key Parameters |
-|------|---------|----------------|
-| `circle_list_spaces` | List community spaces | pagination, 7 sort options |
-| `circle_get_space` | Get a single space by ID | `space_id` (required) |
-| `circle_list_posts` | List posts with filtering | space, status, text search, sort |
-| `circle_get_post` | Get a single post with full body | `post_id` (required) |
-| `circle_list_members` | List community members | pagination, status filter |
-| `circle_search` | Search across the community | `query` (required), type filter |
-
-### Extended Read Tools (v0.2.0)
-
-| Tool | Purpose | Key Parameters |
-|------|---------|----------------|
-| `circle_list_comments` | List comments on a post | `post_id`, `space_id`, pagination |
-| `circle_get_comment` | Get a single comment by ID | `comment_id` (required) |
-| `circle_list_topics` | List topics/tags in the community | pagination |
-| `circle_get_community` | Get community metadata | _(no params)_ |
-| `circle_list_space_groups` | List space groups with space IDs | pagination |
-
-### Derived Intelligence Tools (v0.2.0)
-
-| Tool | Purpose | Key Parameters |
-|------|---------|----------------|
-| `circle_detect_unanswered_posts` | Find posts with zero comments | `space_id` (optional filter) |
-| `circle_community_health` | Point-in-time community health snapshot | _(no params)_ |
-
-### Write Tools (v0.3.0)
-
-| Tool | Purpose | Key Parameters |
-|------|---------|----------------|
-| `circle_create_post` | Create a new post in a space | `space_id`, `name`, `body` (required) |
-| `circle_update_post` | Update an existing post by ID | `post_id` (required), all other fields optional |
-| `circle_create_comment` | Create a comment on a post | `post_id`, `body` (required) |
+All tools are prefixed with `circle_`. No delete operations are exposed. See [Tool Reference](docs/tools.md) for full parameters and examples.
 
 ---
 
-## Getting Started
+## Example Prompts
 
-### Prerequisites
+**Operator diagnostics:**
+> "Show me all spaces grouped by space group. Which spaces have no recent posts?"
 
-- **Node.js** ≥ 18.0.0 (uses native `fetch`)
-- **Circle Admin API token** — obtain from Circle Admin → Settings → API
-- **Claude Desktop** (or any MCP-compatible client)
+**Engagement monitoring:**
+> "Are there unanswered posts in the Q&A space? Prioritize by age."
 
-### Installation
+**Content audit:**
+> "Search for posts about onboarding. What content exists and where are the gaps?"
 
-```bash
-git clone https://github.com/iamnortey/circle-mcp.git
-cd circle-mcp/app/circle-mcp-server
-npm install
-npm run build
+**Member insights:**
+> "How many members joined this month? Show me the most recent signups."
+
+**Content creation:**
+> "Create a draft post in Announcements titled 'Weekly Update' summarizing this week's activity."
+
+**Community briefing:**
+> "Give me a summary I can present in a client meeting: health metrics, unanswered posts, and recent activity."
+
+See [Prompt Starter Pack](docs/product/PROMPT_STARTER_PACK.md) for 30+ ready-to-use workflows.
+
+---
+
+## Validation Status
+
+Circle MCP has been validated in production with both Claude Code and Claude Desktop:
+
+- **Read path:** Community health snapshots, full space inventories with icons and URLs, unanswered post detection, content gap analysis, onboarding audits, and strategic recommendations — all confirmed working against live Circle communities.
+- **Write path:** Post creation (draft and published) and post updates confirmed working. Draft-first workflow verified as safe for production use. Comment creation is exposed but subject to a known Circle API limitation (admin tokens return 401 — see Limitations below).
+- **Claude Desktop:** Successfully loaded and authenticated. All 16 tools visible and operational.
+- **Test suite:** 95 offline tests + 19 live API tests passing.
+
+---
+
+## Limitations (v0.3.0)
+
+- No destructive operations (delete, archive, bulk removal)
+- No moderation (hide, flag, remove content)
+- No member management (ban, invite, change roles)
+- No space or community settings changes
+- No events or courses (planned for v0.4)
+- No historical analytics (snapshots are point-in-time)
+- No file or image uploads
+
+**Write response caveat:** Circle's API may not fully echo rendered body content in the immediate response payload after a successful write. The post is created/updated correctly, but the API response may omit or truncate the body field. This is a Circle API behavior, not a server defect. Verify by fetching the post after creation if you need to confirm the full rendered content.
+
+**Comment creation caveat:** The `circle_create_comment` tool is included in v0.3.0, but Circle's Admin API v2 returns 401 ("You cannot perform this action") for comment creation with admin tokens. The endpoint exists and the tool handles this error gracefully with a clear message and workaround (create comments via the Circle web interface). Read operations for comments (`circle_list_comments`, `circle_get_comment`) work normally. This is a Circle API permission restriction, not a server defect.
+
+---
+
+## Troubleshooting
+
+### "Authentication failed" or empty results
+
+Your Circle Admin API token may be expired or incorrect.
+
+1. Generate a new token in Circle Admin > Settings > API
+2. Update your configuration:
+   - **Claude Code:** `claude mcp remove circle` then re-add with the new token
+   - **Claude Desktop:** Edit `claude_desktop_config.json` and replace the token value, then restart Claude Desktop
+
+### Stale token after environment changes
+
+If you update your Circle API token in a remote deployment (e.g., Railway environment variables), that change does **not** propagate to your local Claude Desktop or Claude Code configuration. Local MCP configs store the token independently. You must update the token in both places.
+
+### Tools not appearing
+
+Ensure the build completed successfully (`npm run build` should produce a `dist/` directory). Check that the path in your Claude configuration points to the correct `dist/index.js` file.
+
+### Slow responses
+
+The Circle Admin API occasionally has latency spikes. The server handles this with a 30-second timeout and automatic retries for read operations. If it persists, check [Circle platform status](https://status.circle.so).
+
+---
+
+## How It Works
+
+You bring your own Circle Admin API token. The MCP server runs locally on your machine via stdio transport. No data passes through third-party infrastructure. Each Circle community requires its own token.
+
+```
+Claude Code / Claude Desktop
+        | stdio
+Circle MCP Server (local)
+        | HTTPS
+Circle Admin API v2
 ```
 
-### Claude Desktop Configuration
+---
 
-Add to your Claude Desktop config (`~/Library/Application Support/Claude/claude_desktop_config.json` on macOS):
+## Documentation
 
-```json
-{
-  "mcpServers": {
-    "circle": {
-      "command": "node",
-      "args": ["/path/to/circle-mcp/app/circle-mcp-server/dist/index.js"],
-      "env": {
-        "CIRCLE_API_TOKEN": "your-circle-admin-api-token"
-      }
-    }
-  }
-}
-```
-
-Restart Claude Desktop. The Circle.so tools will appear automatically.
-
-### Verify
-
-```bash
-# Run the full offline test suite (no API token needed)
-npm run validate
-```
+| Document | Purpose |
+|----------|---------|
+| [Claude Code Install Guide](docs/self-serve/CLAUDE_CODE_INSTALL.md) | Step-by-step Claude Code setup with troubleshooting |
+| [Claude Desktop Install Guide](docs/self-serve/CLAUDE_DESKTOP_INSTALL.md) | Step-by-step Claude Desktop setup with troubleshooting |
+| [Client Quickstart](docs/product/CLIENT_QUICKSTART.md) | Overview of all setup paths |
+| [Prompt Starter Pack](docs/product/PROMPT_STARTER_PACK.md) | 30+ ready-to-use prompts for operator workflows |
+| [Tool Reference](docs/tools.md) | Full parameter reference for all 16 tools |
+| [Server README](https://github.com/iamnortey/circle-mcp-server#readme) | Technical reference (architecture, resilience, internals) |
+| [Documentation Index](docs/README.md) | Full docs navigation |
 
 ---
 
-## Architecture
+## Advanced Options
 
-```
-┌─────────────────────────────────────────────┐
-│              Claude Desktop                  │
-│         (or any MCP client)                  │
-└──────────────┬──────────────────────────────┘
-               │ stdio (JSON-RPC)
-┌──────────────▼──────────────────────────────┐
-│           MCP Server Layer                   │
-│  ┌────────────────────────────────────────┐  │
-│  │    16 Registered Tool Handlers        │  │
-│  │  (validation, response formatting)     │  │
-│  └──────────────┬─────────────────────────┘  │
-│  ┌──────────────▼─────────────────────────┐  │
-│  │         Circle API Client              │  │
-│  │  (typed methods, pagination support)   │  │
-│  └──────────────┬─────────────────────────┘  │
-│  ┌──────────────▼─────────────────────────┐  │
-│  │          HTTP Layer                    │  │
-│  │  (auth, timeout, retry/backoff,       │  │
-│  │   mutation path with zero-retry)       │  │
-│  └────────────────────────────────────────┘  │
-└──────────────────────────────────────────────┘
-               │ HTTPS
-┌──────────────▼──────────────────────────────┐
-│         Circle Admin API v2                  │
-│        (app.circle.so)                       │
-└──────────────────────────────────────────────┘
-```
+### Remote HTTP Transport (Experimental)
 
-**Key design decisions:**
+For team deployments or agency setups where multiple clients share an endpoint. Deploy to Railway, Render, or any Node.js host and run `npm run start:http`. See [deployment docs](docs/internal/deployment/) for details.
 
-- **Zero external HTTP dependencies** — uses Node.js native `fetch` (Node 18+)
-- **Strict TypeScript** — no `any` types, Zod schema validation on all inputs
-- **Fail-fast configuration** — missing API token produces an actionable error immediately
-- **Structured + text responses** — every tool returns both human-readable text and machine-parseable `structuredContent`
-- **Non-destructive write model** — create and update operations only, no delete/archive
+The HTTP transport has no authentication layer and should not be exposed to untrusted networks.
+
+### Smithery Marketplace
+
+This server includes a `smithery.yaml` manifest for [Smithery](https://smithery.ai/). Smithery manages configuration and hosting. Publication is pending.
+
+### Guided Setup Services
+
+Need help installing or operationalizing Circle MCP? Guided setup, training, and managed deployment services are available. See [SERVICE_OFFER.md](docs/product/SERVICE_OFFER.md) for details.
 
 ---
 
-## Resilience
+## Technical Details
 
-| Feature | Behavior |
-|---------|----------|
-| **Retry with backoff** | Transient failures (429, 5xx) retried up to 2 times with exponential delay |
-| **Retry-After support** | Respects Circle's `Retry-After` header on rate-limit responses |
-| **Response truncation** | Large payloads capped at 100K characters with structured fallback |
-| **Timeout protection** | 30-second request timeout prevents hanging |
-| **Actionable errors** | Every error includes specific guidance (e.g., "Verify your API token") |
-| **Mutation safety** | Write operations use zero-retry policy to prevent duplicates |
-
----
-
-## Technical Stack
-
-| Component | Technology |
-|-----------|------------|
-| Runtime | Node.js ≥ 18 (native `fetch`) |
-| Language | TypeScript (strict mode) |
-| Protocol | MCP (Model Context Protocol) v2025-03-26 |
-| Transport | stdio (stable), Streamable HTTP (experimental) |
-| Validation | Zod with `.strict()` schemas |
-| External API | Circle Admin API v2 |
-| Testing | 95 offline + 15 HTTP = 110 tests |
-| Dependencies | 2 runtime (MCP SDK + Zod) |
+- **Language:** TypeScript (strict mode)
+- **Runtime:** Node.js >= 18 (native `fetch`)
+- **MCP SDK:** `@modelcontextprotocol/sdk` v1.12.1
+- **Validation:** Zod v3.24 with `.strict()` schemas
+- **Transport:** stdio (primary, production-tested), Streamable HTTP (experimental)
+- **Test suite:** 95 offline tests + 19 live API tests
+- **Dependencies:** 2 runtime, 3 dev
 
 ---
 
-## Current Limitations
+## Roadmap
 
-Honesty matters. Here is what v0.3.0 does **not** cover:
+- **v0.4:** Events, courses, and expanded write tools
+- **v0.5:** Webhook subscriptions and real-time event streaming
+- **Future:** npm global install, multi-community support, file uploads, moderation tools
 
-- **No moderation workflows** — cannot hide, flag, or remove content
-- **No destructive actions** — no delete, archive, or bulk removal operations
-- **No member management** — cannot ban, invite, change roles, or update member profiles
-- **No space or community settings** — cannot create spaces, change permissions, or modify community config
-- **No guaranteed comment creation** — the Circle Admin API restricts comment creation with admin tokens on some setups (returns 401)
-- **No historical analytics** — health snapshots are point-in-time, not trend data
-- **No event or course tools** — planned for a future release
-- **No file/image uploads** — posts are text/HTML only
-
-These limitations are by design for safety (non-destructive) or by Circle API constraints.
-
----
-
-## Distribution and Status
-
-**Current version: v0.3.0** — Safe Content Operations
-
-| Channel | Status |
-|---------|--------|
-| **GitHub** | Available now — clone and build |
-| **npm** | Coming soon as `circle-so-mcp` |
-| **Smithery** | Manifest validated, listing submission ready |
-| **Streamable HTTP** | Experimental — hardened session management, 15 HTTP tests |
-
-### Roadmap
-
-| Version | Scope |
-|---------|-------|
-| v0.1.0 | Read-only tools (spaces, posts, members, search) |
-| v0.2.0 | Community intelligence (comments, topics, community, space groups, derived analytics) |
-| v0.3.0 | Safe content operations (create/update posts, create comments) — **current** |
-| v0.4 | Events, courses, and expanded write tools |
-| v0.5 | Webhook subscriptions via MCP resources |
+See [Roadmap](docs/roadmap.md) for details.
 
 ---
 
 ## License
 
-MIT
+MIT — see [LICENSE](LICENSE) for details.
+
+## Contributing
+
+Issues and pull requests welcome at [github.com/iamnortey/circle-mcp-server](https://github.com/iamnortey/circle-mcp-server).

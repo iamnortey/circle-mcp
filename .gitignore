@@ -1,0 +1,18 @@
+# Local development (server repo is separate)
+app/
+
+# Secrets
+.env
+.env.*
+
+# Node
+node_modules/
+dist/
+build/
+
+# OS
+.DS_Store
+
+# Samples may contain PII
+artifacts/samples/
+**/artifacts/samples/
