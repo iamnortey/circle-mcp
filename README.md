@@ -4,7 +4,7 @@
 
 Inspect, diagnose, and operate your Circle community through natural language. Run community audits, detect unanswered questions, assess onboarding health, identify content gaps, and publish content — all from Claude Code or Claude Desktop.
 
-**16 tools** | **13 read + 3 write** | **Non-destructive** | **v0.3.0** | **MIT License**
+**16 tools** | **13 read + 3 write** | **Non-destructive** | **v0.3.1** | **MIT License**
 
 ---
 
@@ -159,7 +159,7 @@ Circle MCP has been validated in production with both Claude Code and Claude Des
 
 ---
 
-## Limitations (v0.3.0)
+## Limitations (v0.3.1)
 
 - No destructive operations (delete, archive, bulk removal)
 - No moderation (hide, flag, remove content)
@@ -238,7 +238,7 @@ The HTTP transport has no authentication layer and should not be exposed to untr
 
 ### Smithery Marketplace
 
-This server includes a `smithery.yaml` manifest for [Smithery](https://smithery.ai/). Smithery manages configuration and hosting. Publication is pending.
+This server is listed on [Smithery](https://smithery.ai/servers/iamnortey/circle-so-mcp). Smithery manages configuration and launches the server via stdio.
 
 ### Guided Setup Services
 
