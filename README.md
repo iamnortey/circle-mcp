@@ -275,3 +275,10 @@ MIT — see [LICENSE](LICENSE) for details.
 ## Contributing
 
 Issues and pull requests welcome at [github.com/iamnortey/circle-mcp-server](https://github.com/iamnortey/circle-mcp-server).
+
+## Support
+
+If Circle MCP saves you time, consider supporting ongoing development. Contributions help fund maintenance, documentation, and new workflows.
+
+- [GitHub Sponsors](https://github.com/sponsors/iamnortey)
+<!-- - [Buy Me a Coffee](https://buymeacoffee.com/YOUR_USERNAME) ← uncomment and replace when live -->
