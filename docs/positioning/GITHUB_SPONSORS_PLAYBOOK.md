@@ -10,7 +10,7 @@
 
 **Recommended (paste into GitHub Sponsors bio field):**
 
-> Building AI operating interfaces that connect thinking tools to systems of record. Shipping open-source infrastructure for operators who want to run their platforms from natural language instead of dashboards.
+> Building production-grade software, AI operating interfaces, and workflow infrastructure. Shipping open-source tools for operators who need better ways to run their platforms.
 
 **Alternate A:**
 
@@ -26,18 +26,18 @@
 
 **Recommended (paste into GitHub Sponsors intro/description field):**
 
-I build open-source AI operating interfaces — tools that let operators inspect, diagnose, and act on their platforms through natural language instead of clicking through admin dashboards.
+I build production-grade open-source tools — AI operating interfaces, workflow systems, and vertical infrastructure for operators who need better ways to run their platforms.
 
-My current flagship project is [Circle MCP](https://github.com/iamnortey/circle-mcp), an AI operating interface for Circle.so communities. It lets community managers, consultants, educators, and founders run community operations directly from Claude — health snapshots, content audits, unanswered post detection, and safe content publishing, all from one conversation.
+Current flagship: [Circle MCP](https://github.com/iamnortey/circle-mcp), an AI operating interface for Circle.so communities. Other work spans pronunciation infrastructure for voice AI, education platforms, and commerce tools for emerging markets.
 
 Sponsorship helps fund:
 
 - **Maintenance** — keeping existing tools reliable, tested, and compatible
 - **Documentation** — install guides, operator workflows, prompt packs
 - **New workflows** — expanding what operators can do from natural language
-- **New verticals** — bringing the same approach to platforms beyond Circle
+- **New verticals** — bringing the same approach to more platforms and domains
 
-If these tools save you time or help you think about AI infrastructure differently, your support keeps the work going.
+If these tools save you time, your support keeps the work going.
 
 **Alternate A:**
 
@@ -67,8 +67,8 @@ Sponsorship keeps the lights on for maintenance, testing, docs, and new tooling.
 | 2 | $10 | Monthly | **Operator** | Everything in Supporter, plus your name listed as a sponsor in project docs (optional). |
 | 3 | $25 | Monthly | **Builder** | Everything in Operator, plus priority response on GitHub issues and feature input. |
 | 4 | $50 | One-time | **Quick Start** | 30-minute async setup review — I'll check your configuration, flag issues, and send recommendations. |
-| 5 | $100 | One-time | **Guided Setup** | 1-hour live or async guided setup session. Get Circle MCP running, configured, and tuned for your workflow. |
-| 6 | $200 | One-time | **Workflow Design** | Guided Setup plus a custom prompt pack and workflow recommendations tailored to your community structure. |
+| 5 | $100 | One-time | **Guided Setup** | 1-hour live or async guided setup session. Get your tools running, configured, and tuned for your workflow. |
+| 6 | $200 | One-time | **Workflow Design** | Guided Setup plus a custom prompt pack and workflow recommendations tailored to your use case. |
 
 ### Tier Design Rationale
 
