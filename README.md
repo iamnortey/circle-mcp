@@ -1,36 +1,36 @@
 # Circle MCP
 
-**Community intelligence and operations copilot for Circle.so, powered by Claude.**
+**The AI operating interface for Circle.so communities.**
 
-Inspect, diagnose, and operate your Circle community through natural language. Run community audits, detect unanswered questions, assess onboarding health, identify content gaps, and publish content — all from Claude Code or Claude Desktop.
+Inspect, diagnose, and operate your Circle community through natural language. Run community audits, detect unanswered questions, assess onboarding health, identify content gaps, and publish content — without switching between dashboards.
 
-**16 tools** | **13 read + 3 write** | **Non-destructive** | **v0.3.1** | **MIT License**
+**v0.3.1** | **16 tools** | **Non-destructive writes** | **Works with Claude Code & Claude Desktop** | **MIT License**
 
 ---
 
 ## Why It Matters
 
-Circle operators spend hours clicking through admin menus to answer basic questions: *Which spaces are empty? Are members getting answers? What does our community structure actually look like?*
+Community operators lose hours every week clicking through admin dashboards to answer basic questions: *Which spaces are empty? Are members getting answers? What does our community structure actually look like?*
 
-Circle MCP replaces that with natural language. Ask Claude, get answers. No scripting, no dashboard switching, no manual exports.
+Circle MCP eliminates the dashboard tax. Ask questions in natural language, get structured answers, take action — all from one conversation. No scripting, no tab-switching, no manual exports.
 
-This is not just an API wrapper. The server includes derived intelligence tools — community health snapshots, unanswered post detection, content gap analysis — that aggregate multiple API calls into actionable operator insights.
+Beyond simple data access, Circle MCP includes built-in intelligence — community health snapshots, unanswered post detection, content gap analysis — that aggregate multiple data points into actionable operator insights you can't get from any single dashboard view.
 
 ---
 
 ## Who It's For
 
 - **Community managers** running daily health checks and content operations
-- **Consultants and agencies** auditing client communities and delivering insights
+- **Consultants and agencies** auditing client communities and delivering insights in minutes
 - **Educators** managing course spaces, responding to student questions, and publishing lesson content
-- **Developer advocates** monitoring community engagement and building MCP-based workflows
 - **AI-native founders** keeping their community alive without a dedicated community team
+- **Operators tired of dashboard fatigue** who want one interface for community intelligence
 
 **Requirements:** Git, Node.js >= 18, terminal comfort, and a Circle Admin API token.
 
 ---
 
-## Flagship Workflows
+## What You Can Do
 
 These workflows have been validated against live Circle communities:
 
@@ -111,14 +111,14 @@ If you see your community name and stats, you're connected.
 
 ## Tools
 
-16 tools across four tiers:
+16 tools across four capability tiers:
 
 | Tier | Tools | Purpose |
 |------|-------|---------|
 | **Core Read** (v0.1.0) | `list_spaces`, `get_space`, `list_posts`, `get_post`, `list_members`, `search` | Community data access |
-| **Extended Read** (v0.2.0) | `list_comments`, `get_comment`, `list_topics`, `get_community`, `list_space_groups` | Full API surface |
-| **Intelligence** (v0.2.0) | `detect_unanswered_posts`, `community_health` | Aggregated operator insights |
-| **Write** (v0.3.0) | `create_post`, `update_post`, `create_comment` | Content management |
+| **Extended Read** (v0.2.0) | `list_comments`, `get_comment`, `list_topics`, `get_community`, `list_space_groups` | Full data surface |
+| **Intelligence** (v0.2.0) | `detect_unanswered_posts`, `community_health` | Derived operator insights — what dashboards can't show you |
+| **Write** (v0.3.0) | `create_post`, `update_post`, `create_comment` | Content operations |
 
 All tools are prefixed with `circle_`. No delete operations are exposed. See [Tool Reference](docs/tools.md) for full parameters and examples.
 
@@ -150,7 +150,7 @@ See [Prompt Starter Pack](docs/product/PROMPT_STARTER_PACK.md) for 30+ ready-to-
 
 ## Validation Status
 
-Circle MCP has been validated in production with both Claude Code and Claude Desktop:
+Validated in production against live Circle communities with both Claude Code and Claude Desktop:
 
 - **Read path:** Community health snapshots, full space inventories with icons and URLs, unanswered post detection, content gap analysis, onboarding audits, and strategic recommendations — all confirmed working against live Circle communities.
 - **Write path:** Post creation (draft and published) and post updates confirmed working. Draft-first workflow verified as safe for production use. Comment creation is exposed but subject to a known Circle API limitation (admin tokens return 401 — see Limitations below).
@@ -202,13 +202,13 @@ The Circle Admin API occasionally has latency spikes. The server handles this wi
 
 ## How It Works
 
-You bring your own Circle Admin API token. The MCP server runs locally on your machine via stdio transport. No data passes through third-party infrastructure. Each Circle community requires its own token.
+You bring your own Circle Admin API token. The server runs locally on your machine — no data passes through third-party infrastructure. Your community data stays between you, Claude, and Circle's API.
 
 ```
-Claude Code / Claude Desktop
-        | stdio
-Circle MCP Server (local)
-        | HTTPS
+You (Claude Code / Claude Desktop)
+        ↓ natural language
+Circle MCP Server (runs on your machine)
+        ↓ authenticated HTTPS
 Circle Admin API v2
 ```
 
@@ -232,7 +232,7 @@ Circle Admin API v2
 
 ### Remote HTTP Transport (Experimental)
 
-For team deployments or agency setups where multiple clients share an endpoint. Deploy to Railway, Render, or any Node.js host and run `npm run start:http`. See [deployment docs](docs/internal/deployment/) for details.
+For team deployments or agency setups where multiple operators share a single endpoint. Deploy to Railway, Render, or any Node.js host and run `npm run start:http`. See [deployment docs](docs/internal/deployment/) for details.
 
 The HTTP transport has no authentication layer and should not be exposed to untrusted networks.
 
@@ -240,9 +240,9 @@ The HTTP transport has no authentication layer and should not be exposed to untr
 
 This server is listed on [Smithery](https://smithery.ai/servers/iamnortey/circle-so-mcp). Smithery manages configuration and launches the server via stdio.
 
-### Guided Setup Services
+### Guided Setup & Onboarding
 
-Need help installing or operationalizing Circle MCP? Guided setup, training, and managed deployment services are available. See [SERVICE_OFFER.md](docs/product/SERVICE_OFFER.md) for details.
+Want Circle MCP configured and running for your team? Guided setup, operator training, and managed deployment services are available. See [SERVICE_OFFER.md](docs/product/SERVICE_OFFER.md) for details.
 
 ---
 
@@ -260,9 +260,9 @@ Need help installing or operationalizing Circle MCP? Guided setup, training, and
 
 ## Roadmap
 
-- **v0.4:** Events, courses, and expanded write tools
+- **v0.4:** Events, courses, and expanded content operations
 - **v0.5:** Webhook subscriptions and real-time event streaming
-- **Future:** npm global install, multi-community support, file uploads, moderation tools
+- **Future:** `npx` install, multi-community support, file uploads, moderation tools
 
 See [Roadmap](docs/roadmap.md) for details.
 

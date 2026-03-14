@@ -1,6 +1,6 @@
 # Documentation Index
 
-Circle MCP is a community intelligence and operations copilot for Circle.so, powered by Claude. These docs cover installation, workflows, and technical reference.
+Circle MCP is the AI operating interface for Circle.so communities. These docs cover installation, workflows, and technical reference.
 
 ## Install Guides
 
@@ -31,3 +31,5 @@ Circle MCP is a community intelligence and operations copilot for Circle.so, pow
 ## Internal
 
 Operational documents (contracts, evidence, launch planning, reports, research, strategy, deployment notes) are in [`internal/`](internal/).
+
+Positioning and GTM assets are in [`positioning/`](positioning/) — includes the messaging framework and launch copy blocks.

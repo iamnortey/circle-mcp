@@ -8,7 +8,7 @@
 
 ## Overview
 
-Circle MCP is a community intelligence and operations copilot for Circle.so, powered by Claude. For v1 (the current release), the primary commercial motion is a **productized service**: guided setup, configuration, and training for Circle operators, consultants, and agencies who want AI-powered community audits, engagement monitoring, and content operations.
+Circle MCP is the AI operating interface for Circle.so communities. For v1 (the current release), the primary commercial motion is a **productized service**: guided setup, configuration, and training for Circle operators, consultants, and agencies who want AI-powered community audits, engagement monitoring, and content operations.
 
 This document defines what that service includes, who it is for, and how it is delivered.
 

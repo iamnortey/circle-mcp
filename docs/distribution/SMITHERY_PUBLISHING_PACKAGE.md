@@ -8,13 +8,13 @@
 
 ## Canonical Short Description
 
-> MCP server for Circle.so — community intelligence and content operations via natural language. 16 tools for spaces, posts, members, comments, search, analytics, and content creation.
+> AI operating interface for Circle.so — community intelligence and content operations through natural language. 16 tools for spaces, posts, members, comments, search, health snapshots, and content creation.
 
 ---
 
 ## Canonical Long Description
 
-Circle MCP Server connects your Circle.so community to Claude and any MCP-compatible AI client. It provides 16 tools (13 read, 3 write) that translate natural language into structured Circle Admin API v2 calls.
+Circle MCP is the AI operating interface for Circle.so communities. It provides 16 tools (13 read, 3 write) that let you inspect, analyze, and operate your Circle community through natural language — from Claude or any MCP-compatible AI client.
 
 **What it does:**
 - Query spaces, posts, members, comments, topics, and community metadata

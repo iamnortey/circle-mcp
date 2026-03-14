@@ -1,4 +1,4 @@
-# Ideal Customer Profiles and Jobs to Be Done — Circle MCP Server
+# Ideal Customer Profiles and Jobs to Be Done — Circle MCP
 
 > **Version:** 1.0.0
 > **Last Updated:** 2026-03-13
@@ -8,7 +8,7 @@
 
 ## Overview
 
-Circle MCP Server connects Circle.so communities to AI assistants through the Model Context Protocol. This document defines the customer profiles, their jobs to be done, and how the current 16-tool implementation maps to their needs.
+Circle MCP is the AI operating interface for Circle.so communities. This document defines the customer profiles, their jobs to be done, and how the current 16-tool implementation maps to their needs.
 
 ---
 

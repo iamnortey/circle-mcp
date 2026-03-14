@@ -4,7 +4,7 @@
 > **Last Updated:** 2026-03-13
 > **Purpose:** Get connected and running your first community query in under 15 minutes
 
-Circle MCP is a community intelligence and operations copilot for Circle.so. Once connected, you can run community audits, detect unanswered questions, assess onboarding health, and publish content — all through natural language in Claude.
+Circle MCP is the AI operating interface for Circle.so communities. Once connected, you can run community audits, detect unanswered questions, assess onboarding health, and publish content — all through natural language in Claude.
 
 ---
 

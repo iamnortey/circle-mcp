@@ -9,7 +9,7 @@
 
 ## What This Is
 
-Circle MCP is an open-source MCP server that gives Claude direct access to your Circle.so community. Once connected, you can query spaces, posts, members, comments, and topics — detect unanswered questions, get community health snapshots, and create or update content — all through natural language in Claude Code.
+Circle MCP is the AI operating interface for Circle.so communities. Once connected, you can query spaces, posts, members, comments, and topics — detect unanswered questions, get community health snapshots, and create or update content — all through natural language in Claude Code.
 
 This guide walks you through installing Circle MCP locally and connecting it to Claude Code using your own Circle API token.
 

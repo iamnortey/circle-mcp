@@ -131,7 +131,7 @@ It connects Circle communities to AI assistants (Claude Desktop, Claude Code, an
 
 ### For Consultants and Agencies
 
-> Audit any Circle community in minutes. Get health snapshots, find unanswered posts, review space structures, and push content — without clicking through admin menus. Circle MCP turns Claude into your community operations copilot.
+> Audit any Circle community in minutes. Get health snapshots, find unanswered posts, review space structures, and push content — without clicking through admin menus. Circle MCP makes Claude your operating interface for Circle.so.
 
 ### For Technical Operators
 
